@@ -1,14 +1,14 @@
-﻿@page "/models/"
+﻿@page "/makes/"
 @inject HttpClient _client
 @inject IJSRuntime js
 @attribute [Authorize]
 
 
-<h3 class="card-title">Car Models</h3>
+<h3 class="card-title">Car Makes</h3>
 
-@if (Models == null)
+@if (Makes == null)
 {
-    <div class="alert alert-info">Loading Models...</div>
+    <div class="alert alert-info">Loading Makes...</div>
 }
 else
 {
@@ -20,18 +20,18 @@ else
             </tr>
         </thead>
         <tbody>
-            @foreach (var model in Models)
+            @foreach (var make in Makes)
             {
                 <tr>
-                    <td>@model.Name</td>
+                    <td>@make.Name</td>
                     <td>
-                        <a href="/models/view/@model.Id" class="btn btn-primary">
+                        <a href="/makes/view/@make.Id" class="btn btn-primary">
                             <span class="oi oi-book"></span>
                         </a>
-                        <a href="/models/edit/@model.Id" class="btn btn-warning">
+                        <a href="/makes/edit/@make.Id" class="btn btn-warning">
                             <span class="oi oi-pencil"></span>
                         </a>
-                        <button class="btn btn-danger" @onclick="@(()=>Delete(model.Id))">
+                        <button class="btn btn-danger" @onclick="@(()=>Delete(make.Id))">
                             <span class="oi oi-delete"></span>
                         </button>
                     </td>
@@ -42,21 +42,21 @@ else
 }
 
 @code {
-    private List<Model> Models;
+    private List<Make> Makes;
 
     protected async override Task OnInitializedAsync()
     {
-        Models = await _client.GetFromJsonAsync<List<Model>>($"{Endpoints.ModelsEndpoint}");
+        Makes = await _client.GetFromJsonAsync<List<Make>>($"{Endpoints.MakesEndpoint}");
     }
 
-    async Task Delete(int modelId)
+    async Task Delete(int makeId)
     {
-        var model = Models.First(q => q.Id == modelId);
-        var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete {model.Name}?");
+        var make = Makes.First(q => q.Id == makeId);
+        var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete {make.Name}?");
         if (confirm)
 
         {
-            await _client.DeleteAsync($"{Endpoints.ModelsEndpoint}/{modelId}");
+            await _client.DeleteAsync($"{Endpoints.MakesEndpoint}/{makeId}");
             await OnInitializedAsync();
         }
     }
